@@ -1,0 +1,164 @@
+Git notes: ( Feb. 2019)
+
+Oliver Steele's graphic showing the relationship of git's workspace ("working repo"), the local repository, and the remote repository with git commands:
+https://blog.osteele.com/2008/05/my-git-workflow/
+
+
+
+To create a new repo in a directory on your local machine: 
+Run git init in the directory you want to become the repo. The name of the directory will become the name of the repository.
+You can git add . the files in the directory after you create it.
+
+>$ cd path/to/intended/repo/directory
+>$ git init
+
+
+If you don't have any files in the dir you are making into a repo, you can add a README.md project description 
+file so you have something that can be committed and pushed, thereby creating the remote repo on your GitHub account. 
+
+One way to create a README file:
+>$ echo "project description: blah-blah-blah" >> README.md
+
+
+Now add the new README file to the tracking index, then commit it to the local repo.
+>$ git add .
+>$ git commit -m "initial commit"
+
+Next, you can push the commits to a remote repo. If it's a local repo created via "git init", there won't be a remote set.
+If you created the local repo via "git clone", you already have the remote set for you.
+To see what remote is currently set up for a local repo:
+>$ git remote -v
+
+For the first push from a repo created via "git init", you will need to tell git what and where the remote is,
+then set that as the remote tracking branch.
+
+>$ git remote add origin git@github.com:<github-account>/<repository-name>.git
+>$ git push -u origin master
+
+
+How to change where the local branch pulls/pushes to:
+>$ git remote set-url origin /url/of/new/empty/repo
+>$ git push -u origin master
+
+
+
+Fetch and Merge
+
+Update your local repo from a remote repo with git fetch or git pull.
+Note that git pull simply chains git fetch + git merge
+
+Discussion of git fetch vs git pull:
+https://stackoverflow.com/questions/292357/what-is-the-difference-between-git-pull-and-git-fetch
+
+
+
+>$ git fetch origin 
+By default fetches everything from the remote named "origin" and updates (or creates) the so-called "remote-tracking branches" for that remote. So for example, if the remote named "origin" has branches named "master" and "feature", running "git fetch origin" will result in the local repo's remote-tracking branches named "origin/master" and "origin/feature" being updated from the remote (or being created if they don't exist in the local repo). 
+
+The usual Git setup is that (some of) your local branches follow certain remote branches (usually same-named). That is, your local "master" branch follows "origin/master" etc.
+
+After you fetched, you can see what *commits* the remote "master" branch (i.e., origin/master) has that your local "master" branch doesn't have::
+>$ git log master..origin/master 
+
+To see what *lines of code* the remote master has that your local doesn't:
+>$ git diff master..origin/master
+
+
+To see what commits and lines of code your *local master* has that the *remote master* doesn't have, reverse the terms:
+>$ git log origin/master..master
+>$ git diff origin/master..master
+
+
+Finally, to add the changes fetch brought in to your local remote-tracking branch to your current local branch:
+>$ git merge origin/master
+
+
+
+
+Some explanation of remote nomenclature: 
+>$ git branch -a
+This will return (if you have not created any new branches):
+
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+
+The * indicates which branch you are currently on (if you have more than 1), and
+master is a branch in the local repository. So * master means you are on 'master' branch of your local repo.
+
+remotes/origin/HEAD shows that the default branch for the remote named origin is origin/master. This allows you to simply use origin instead of origin/master.
+
+Breaking down the nomenclature remotes/origin/master:
+
+remotes 	(indicates this is a remote repository)
+origin 	(the identifier/name of the remote is origin)
+master 	(the name of the branch is master)
+
+
+So: remotes/origin/master is a branch named master on the remote named origin. You can 
+also refer to this as either remotes/origin/master or origin/master
+
+Therefore all of the following mean the same thing, which is "show me the changes between my local 'master' branch and the 'master' branch on the remote 'origin'":
+
+>$ git diff master..remotes/origin/master
+
+>$ git diff master..origin/master
+
+>$ git diff master..origin
+
+And the same using an implied local branch:
+>$ git diff ..origin
+
+
+
+
+Other useful info:
+
+Show what's changed since the last checkpoint:
+>$ git diff
+
+Show what's changed since last commit, i.e., what would be committed if you ran "git commit -a"
+>$ git diff HEAD 
+
+Revert to the last checkpoint (the last git add):
+>$ git checkout . 
+
+Revert to the last commit:
+>$ git checkout head . 
+
+Temporarily remove and store the changes (git added and not added) since the last commit into a buffer that can be recalled later:
+>$ git stash 
+
+Apply the previously stashed changes to the branch you are currently on:
+>$ git stash pop
+
+
+
+<<<<<<<< Resolving Conflicts! >>>>>>>>>
+
+What do 'ours' and 'theirs' mean?
+ours == the branch you started in before having a conflict, aka current checked out branch 
+theirs == the commit/change coming in (i.e., via merge) to that branch
+
+Conflict markers in a conflicted file:
+
+<<<<<<<<<<HEAD
+ours code here
+==============
+theirs code after the 'divider'
+>>>>>>>>>>>>23490942252321245 (this is commit # of the theirs version)
+
+If you want to keep the theirs version:
+>$ git checkout --theirs
+and git will get rid of ours version and keep theirs.
+
+Same for keeping the ours version:
+>$ git checkout --ours
+and git discards theirs
+
+You still have to git add <filename> to mark the conflicted file as resolved.
+
+
+
+
+
