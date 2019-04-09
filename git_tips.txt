@@ -52,12 +52,16 @@ https://stackoverflow.com/questions/292357/what-is-the-difference-between-git-pu
 
 
 
->$ git fetch origin 
-By default fetches everything from the remote named "origin" and updates (or creates) the so-called "remote-tracking branches" for that remote. So for example, if the remote named "origin" has branches named "master" and "feature", running "git fetch origin" will result in the local repo's remote-tracking branches named "origin/master" and "origin/feature" being updated from the remote (or being created if they don't exist in the local repo). 
+>$ git fetch origin
+
+Fetches changes by default from from the remote named "origin" and updates (or creates) the "remote-tracking branches" for that remote. Typically this is the master branch.
+
+>$ git fetch -all
+Fetches changes from all remotes (origin is one of them)
 
 
 
-The usual Git setup is that (some of) your local branches follow certain remote branches (usually same-named). That is, your local "master" branch follows "origin/master" etc.
+The usual Git setup is that some or all of your local branches have tracking branches that follow remote branches (usually same-named). That is, your local "master" branch has a local tracking branch "remotes/origin/master" that follows the remote branch "master"
 
 After you fetched, you can see what *commits* the remote "master" branch (i.e., origin/master) has that your local "master" branch doesn't have::
 >$ git log master..origin/master 
