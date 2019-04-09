@@ -55,6 +55,8 @@ https://stackoverflow.com/questions/292357/what-is-the-difference-between-git-pu
 >$ git fetch origin 
 By default fetches everything from the remote named "origin" and updates (or creates) the so-called "remote-tracking branches" for that remote. So for example, if the remote named "origin" has branches named "master" and "feature", running "git fetch origin" will result in the local repo's remote-tracking branches named "origin/master" and "origin/feature" being updated from the remote (or being created if they don't exist in the local repo). 
 
+
+
 The usual Git setup is that (some of) your local branches follow certain remote branches (usually same-named). That is, your local "master" branch follows "origin/master" etc.
 
 After you fetched, you can see what *commits* the remote "master" branch (i.e., origin/master) has that your local "master" branch doesn't have::
@@ -73,6 +75,10 @@ Finally, to add the changes fetch brought in to your local remote-tracking branc
 >$ git merge origin/master
 
 
+Git Branches
+
+Tracking branches
+https://stackoverflow.com/questions/4693588/git-what-is-a-tracking-branch/4697054#4697054
 
 
 Some explanation of remote nomenclature: 
